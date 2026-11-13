@@ -1,14 +1,13 @@
-"""news-image-01: write one image summing up 13 November 2026 world news to /output/entry.png. Deterministic: copies the image the repository holds. No network."""
+"""Copy the newspaper front page to the output path."""
 import os
 import shutil
-from pathlib import Path
 
-SRC = Path(__file__).resolve().parent / "assets" / "entry.png"
-DST = Path(os.environ.get("ENTRY_OUTPUT", "/output/entry.png"))
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "entry.png")
 
-def main() -> None:
-    DST.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(SRC, DST)
+if not os.path.isfile(SRC):
+    raise FileNotFoundError(f"source image not found: {SRC}")
 
-if __name__ == "__main__":
-    main()
+out = os.environ.get("ENTRY_OUTPUT", "/output/entry.png")
+os.makedirs(os.path.dirname(out), exist_ok=True)
+shutil.copyfile(SRC, out)
+print(out)
